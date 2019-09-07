@@ -6,6 +6,7 @@ import com.space.service.ShipService;
 import com.space.service.ShipServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -15,7 +16,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class ShipController {
@@ -32,18 +36,14 @@ public class ShipController {
     }
 
     @RequestMapping(value = "rest/ships", method = RequestMethod.POST)
-    public ResponseEntity createShip(@RequestBody String data) {
-        System.out.println(data);
-        Ship newShip = JsonConverterService.toPOJO(data);
-        if (newShip.getUsed() == null) {
-            newShip = new Ship(newShip.getName(), newShip.getPlanet(),
-                    newShip.getShipType(), newShip.getProdDate(), false, newShip.getSpeed(), newShip.getCrewSize());
-        } else {
-            newShip = new Ship(newShip.getName(), newShip.getPlanet(),
-                    newShip.getShipType(), newShip.getProdDate(), newShip.getUsed(), newShip.getSpeed(), newShip.getCrewSize());
+    public ResponseEntity createShip(@RequestBody LinkedHashMap<String, Object> params) {
+        ShipServiceImpl shipService = new ShipServiceImpl();
+        if (shipService.isParamsValid(params)) {
+            Ship newShip = shipService.convertParamsToShip(params);
+            shipService.add(newShip);
+            return new ResponseEntity(JsonConverterService.toJSON(newShip), HttpStatus.OK);
         }
-        shipService.add(newShip);
-        return new ResponseEntity(JsonConverterService.toJSON(newShip), HttpStatus.OK);
+        return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
     @RequestMapping(value = "/ships/{id}", method = RequestMethod.GET)

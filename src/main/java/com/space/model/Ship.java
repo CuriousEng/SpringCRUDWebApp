@@ -110,6 +110,6 @@ public class Ship {
     public void setRating() {
         double k = 1;
         if (this.isUsed) k = 0.5;
-        this.rating = (80 * this.speed * k) / 3020 - this.getProdDate().getYear();
+        this.rating = (double) Math.round((((80 * this.speed * k) / (3020 - this.getProdDate().getYear())) * 100) / 100 );
     }
 }
