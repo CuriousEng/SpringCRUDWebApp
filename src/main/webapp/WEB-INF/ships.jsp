@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html lang="en">
 <head>
@@ -17,5 +18,35 @@
 </head>
 <body>
 <h1>List of Ships</h1>
+<table>
+    <tr>
+        <th>id</th>
+        <th>name</th>
+        <th>planet</th>
+        <th>shipType</th>
+        <th>Production Date</th>
+        <th>is Used</th>
+        <th>speed</th>
+        <th>crew size</th>
+        <th>rating</th>
+    </tr>
+    <c:forEach var="ship" items="${shipList}">
+        <tr>
+            <td>${ship.id}</td>
+            <td>${ship.name}</td>
+            <td>${ship.planet}</td>
+            <td>${ship.shipType}</td>
+            <td>${ship.prodDate}</td>
+            <td>${ship.isUsed}</td>
+            <td>${ship.speed}</td>
+            <td>${ship.crewSize}</td>
+            <td>${ship.rating}</td>
+            <td>
+                <a href="/edit/${ship.id}">edit</a>
+                <a href="/delete/${ship.id}">delete</a>
+            </td>
+        </tr>
+    </c:forEach>
+</table>
 </body>
 </html>
