@@ -11,7 +11,7 @@ public class ShipServiceImpl implements ShipService {
 
     @Override
     public List<Ship> allShips() {
-        return null;
+        return shipDAO.allShips();
     }
 
     @Override

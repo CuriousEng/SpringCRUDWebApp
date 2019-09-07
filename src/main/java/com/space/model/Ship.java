@@ -26,6 +26,19 @@ public class Ship {
     @Column(name = "rating")
     private Double rating;
 
+    public Ship() {
+    }
+
+    public Ship(String name, String planet, ShipType shipType, Date prodDate, Boolean isUsed, Double speed, Integer crewSize) {
+        this.name = name;
+        this.planet = planet;
+        this.shipType = shipType;
+        this.prodDate = prodDate;
+        this.isUsed = isUsed;
+        this.speed = speed;
+        this.crewSize = crewSize;
+    }
+
     public Long getId() {
         return id;
     }
@@ -94,7 +107,9 @@ public class Ship {
         return rating;
     }
 
-    public void setRating(Double rating) {
-        this.rating = rating;
+    public void setRating() {
+        double k = 1;
+        if (this.isUsed) k = 0.5;
+        this.rating = (80 * this.speed * k) / 3020 - this.getProdDate().getYear();
     }
 }
