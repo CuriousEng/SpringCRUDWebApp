@@ -1,5 +1,7 @@
 package com.space.config;
 
+import com.space.repository.ShipDAOImpl;
+import com.space.service.ShipServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -64,5 +66,15 @@ public class AppConfig {
         properties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
 
         return properties;
+    }
+
+    @Bean
+    public ShipServiceImpl shipService() {
+        return new ShipServiceImpl();
+    }
+
+    @Bean
+    public ShipDAOImpl shipDAO() {
+        return new ShipDAOImpl();
     }
 }

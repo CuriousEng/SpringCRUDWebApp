@@ -1,6 +1,7 @@
 package com.space.repository;
 
 import com.space.model.Ship;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
+@Repository
 public class ShipDAOImpl implements ShipDAO{
     private final static AtomicLong AUTO_ID = new AtomicLong(0);
     private static Map<Long, Ship> ships = new HashMap<>();

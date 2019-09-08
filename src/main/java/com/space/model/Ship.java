@@ -11,6 +11,7 @@ import java.util.Date;
 public class Ship {
 
     @Id
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonInclude
     private Long id;
@@ -46,19 +47,6 @@ public class Ship {
     @Column(name = "rating")
     @JsonInclude
     private Double rating;
-
-    public Ship() {
-    }
-
-    public Ship(String name, String planet, ShipType shipType, Date prodDate, Boolean isUsed, Double speed, Integer crewSize) {
-        this.name = name;
-        this.planet = planet;
-        this.shipType = shipType;
-        this.prodDate = prodDate;
-        this.isUsed = isUsed;
-        this.speed = speed;
-        this.crewSize = crewSize;
-    }
 
     public Long getId() {
         return id;
