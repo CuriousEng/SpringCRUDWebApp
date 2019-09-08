@@ -26,15 +26,6 @@ public class ShipController {
 
     private ShipService shipService = new ShipServiceImpl();
 
-    @RequestMapping(value = "rest/ships", method = RequestMethod.GET)
-    public ModelAndView allShips() {
-        List<Ship> ships = shipService.allShips();
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("ships");
-        modelAndView.addObject("shipList", ships);
-        return modelAndView;
-    }
-
     @RequestMapping(value = "rest/ships", method = RequestMethod.POST)
     public ResponseEntity createShip(@RequestBody LinkedHashMap<String, Object> params) {
         ShipServiceImpl shipService = new ShipServiceImpl();
@@ -47,11 +38,27 @@ public class ShipController {
     }
 
     @RequestMapping(value = "/ships/{id}", method = RequestMethod.GET)
-    public ModelAndView getShip(@PathVariable("id") int id) {
+    public ResponseEntity getShip(@PathVariable("id") long id) {
+        return shipService.getById(id) == null ?
+                new ResponseEntity(HttpStatus.NOT_FOUND) :
+                new ResponseEntity(JsonConverterService.toJSON(shipService.getById(id)),HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/ships/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity deleteShip(@PathVariable("id") long id) {
         Ship film = shipService.getById(id);
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("ship");
         modelAndView.addObject("film", film);
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "rest/ships", method = RequestMethod.GET)
+    public ModelAndView allShips() {
+        List<Ship> ships = shipService.allShips();
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("ships");
+        modelAndView.addObject("shipList", ships);
         return modelAndView;
     }
 

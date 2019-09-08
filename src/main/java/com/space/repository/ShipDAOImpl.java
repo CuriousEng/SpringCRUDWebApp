@@ -35,6 +35,6 @@ public class ShipDAOImpl implements ShipDAO{
 
     @Override
     public Ship getById(long id) {
-        return null;
+         return allShips().get(((Long) id).intValue());
     }
 }

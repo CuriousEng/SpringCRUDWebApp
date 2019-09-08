@@ -1,29 +1,50 @@
 package com.space.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
+@JsonPropertyOrder({ "id", "name", "planet", "shipType", "prodDate", "isUsed", "speed", "crewSize", "rating" })
 public class Ship {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonInclude
     private Long id;
+
     @Column(name = "name")
+    @JsonInclude
     private String name;
+
     @Column(name = "planet")
+    @JsonInclude
     private String planet;
+
     @Column(name = "shipType")
+    @JsonInclude
     private ShipType shipType;
+
     @Column(name = "prodDate")
+    @JsonInclude
     private Date prodDate;
+
     @Column(name = "isUsed")
+    @JsonInclude
     private Boolean isUsed;
+
     @Column(name = "speed")
+    @JsonInclude
     private Double speed;
+
     @Column(name = "crewSize")
+    @JsonInclude
     private Integer crewSize;
+
     @Column(name = "rating")
+    @JsonInclude
     private Double rating;
 
     public Ship() {
@@ -79,11 +100,11 @@ public class Ship {
         this.prodDate = prodDate;
     }
 
-    public Boolean getUsed() {
+    public Boolean getIsUsed() {
         return isUsed;
     }
 
-    public void setUsed(Boolean used) {
+    public void setIsUsed(Boolean used) {
         isUsed = used;
     }
 
@@ -110,6 +131,6 @@ public class Ship {
     public void setRating() {
         double k = 1;
         if (this.isUsed) k = 0.5;
-        this.rating = (double) Math.round((((80 * this.speed * k) / (3020 - this.getProdDate().getYear())) * 100) / 100 );
+        this.rating = Math.round(((80 * this.speed * k) / (3020 - (this.getProdDate().getYear() + 1900))) * 100.0) / 100.0 ;
     }
 }

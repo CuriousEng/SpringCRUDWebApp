@@ -5,12 +5,9 @@ import com.space.model.ShipType;
 import com.space.repository.ShipDAO;
 import com.space.repository.ShipDAOImpl;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.TimeZone;
 
 public class ShipServiceImpl implements ShipService {
     private ShipDAO shipDAO = new ShipDAOImpl();
@@ -37,7 +34,7 @@ public class ShipServiceImpl implements ShipService {
 
     @Override
     public Ship getById(long id) {
-        return null;
+         return shipDAO.getById(id);
     }
 
     public Ship convertParamsToShip(LinkedHashMap<String, Object> params){
@@ -45,17 +42,19 @@ public class ShipServiceImpl implements ShipService {
         try {
             Date date = new Date((Long) params.get("prodDate"));
             Double speed = (double) Math.round(Double.parseDouble((String) params.get("speed")) * 100) / 100;
-            Integer crewSize = Integer.parseInt((String) params.get("srewSize"));
+            Integer crewSize = Integer.parseInt((String) params.get("crewSize"));
             ship.setName((String)params.get("name"));
             ship.setPlanet((String)params.get("planet"));
-            ship.setShipType((ShipType) params.get("shipType"));
+            ship.setShipType(ShipType.valueOf((String)params.get("shipType")));
             ship.setProdDate(date);
             ship.setSpeed(speed);
             ship.setCrewSize(crewSize);
-            ship.setRating();
             if (params.containsKey("isUsed")){
-                ship.setUsed((boolean)params.get("isUsed"));
+                ship.setIsUsed((boolean)params.get("isUsed"));
+            } else {
+                ship.setIsUsed(false);
             }
+            ship.setRating();
         } catch (Exception e) {
             System.out.println("Can`t parse value from request object");
             e.printStackTrace();
@@ -72,7 +71,7 @@ public class ShipServiceImpl implements ShipService {
             return false;
         }
         Ship ship = convertParamsToShip(params);
-        if ((ship.getProdDate().getYear() >= 2800 && ship.getProdDate().getYear() <= 3019) &&
+        if ((ship.getProdDate().getYear() + 1900 >= 2800 && ship.getProdDate().getYear() + 1900 <= 3019) &&
                 (ship.getCrewSize() >= 1 && ship.getCrewSize() <= 9999) &&
                 (ship.getSpeed() >= 0.01 && ship.getSpeed() <= 0.99)) {
             return true;
