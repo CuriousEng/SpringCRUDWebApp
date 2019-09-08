@@ -16,10 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 public class ShipController {
@@ -46,11 +44,12 @@ public class ShipController {
 
     @RequestMapping(value = "/ships/{id}", method = RequestMethod.DELETE)
     public ResponseEntity deleteShip(@PathVariable("id") long id) {
-        Ship film = shipService.getById(id);
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("ship");
-        modelAndView.addObject("film", film);
-        return modelAndView;
+        if (shipService.getById(id) == null) {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        } else {
+            shipService.delete(shipService.getById(id));
+            return new ResponseEntity(JsonConverterService.toJSON(shipService.getById(id)),HttpStatus.OK);
+        }
     }
 
     @RequestMapping(value = "rest/ships", method = RequestMethod.GET)
