@@ -5,6 +5,7 @@ import com.space.model.Ship;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.List;
 
 public class JsonConverterService {
 
@@ -15,6 +16,30 @@ public class JsonConverterService {
             mapper.writeValue(stringWriter, ship);
         } catch (IOException e) {
             System.out.println("Can`t convert POJO to JSON");
+        }
+        System.out.println("JSON successfully created!");
+        return stringWriter.toString();
+    }
+
+    public static String toJSON(List<Ship> ships) {
+        StringWriter stringWriter = new StringWriter();
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            mapper.writeValue(stringWriter, ships);
+        } catch (IOException e) {
+            System.out.println("Can`t convert POJO List to JSON");
+        }
+        System.out.println("JSON successfully created!");
+        return stringWriter.toString();
+    }
+
+    public static String countToJSON(Integer count) {
+        StringWriter stringWriter = new StringWriter();
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            mapper.writeValue(stringWriter, count);
+        } catch (IOException e) {
+            System.out.println("Can`t convert count to JSON");
         }
         System.out.println("JSON successfully created!");
         return stringWriter.toString();

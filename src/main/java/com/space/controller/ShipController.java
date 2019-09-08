@@ -25,6 +25,7 @@ public class ShipController {
 
     private ShipService shipService = new ShipServiceImpl();
 
+    //CREATE
     @RequestMapping(value = "rest/ships", method = RequestMethod.POST)
     public ResponseEntity createShip(@RequestBody LinkedHashMap<String, Object> params) {
         if (shipService.isParamsValid(params)) {
@@ -34,7 +35,7 @@ public class ShipController {
         }
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
-
+    //GET
     @RequestMapping(value = "/ships/{id}", method = RequestMethod.GET)
     public ResponseEntity getShip(@PathVariable("id") long id) {
         try{
@@ -46,7 +47,7 @@ public class ShipController {
                 new ResponseEntity(HttpStatus.NOT_FOUND) :
                 new ResponseEntity(JsonConverterService.toJSON(shipService.getById(id)),HttpStatus.OK);
     }
-
+    //DELETE
     @RequestMapping(value = "/ships/{id}", method = RequestMethod.DELETE)
     public ResponseEntity deleteShip(@PathVariable("id") long id) {
         try{
@@ -61,7 +62,7 @@ public class ShipController {
             return new ResponseEntity(JsonConverterService.toJSON(shipService.getById(id)),HttpStatus.OK);
         }
     }
-
+    //UPDATE
     @RequestMapping(value = "/ships/{id}", method = RequestMethod.POST)
     public ResponseEntity editShip(@PathVariable("id") long id, @RequestBody LinkedHashMap<String, Object> params) {
         try{
@@ -77,13 +78,16 @@ public class ShipController {
             return new ResponseEntity(JsonConverterService.toJSON(shipService.getById(id)),HttpStatus.OK);
         }
     }
-
+    //GET SHIPS LIST
     @RequestMapping(value = "rest/ships", method = RequestMethod.GET)
-    public ModelAndView allShips() {
+    public ResponseEntity allShips(@RequestBody LinkedHashMap<String, Object> params) {
         List<Ship> ships = shipService.allShips();
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("ships");
-        modelAndView.addObject("shipList", ships);
-        return modelAndView;
+        return new ResponseEntity(JsonConverterService.toJSON(ships),HttpStatus.OK);
+    }
+    //GET SHIPS COUNT
+    @RequestMapping(value = "rest/ships", method = RequestMethod.GET)
+    public ResponseEntity shipsCount() {
+        List<Ship> ships = shipService.allShips();
+        return new ResponseEntity(JsonConverterService.countToJSON(ships.size()),HttpStatus.OK);
     }
 }
