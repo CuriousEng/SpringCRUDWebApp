@@ -9,6 +9,6 @@ public interface ShipDAO {
     List<Ship> allShips();
     void add(Ship ship);
     void delete(Long id);
-    void edit(Ship ship);
+    void edit(Long id);
     Ship getById(long id);
 }

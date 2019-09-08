@@ -9,8 +9,9 @@ public interface ShipService {
 
     List<Ship> allShips();
     void add(Ship ship);
-    void delete(Ship ship);
-    void edit(Ship ship);
+    void delete(Long id);
+    void edit(Long id);
     Ship getById(long id);
     boolean isParamsValid(LinkedHashMap<String, Object> params);
+    Ship convertParamsToShip(LinkedHashMap<String, Object> params, Ship ship);
 }

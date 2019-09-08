@@ -29,12 +29,12 @@ public class ShipDAOImpl implements ShipDAO{
     }
 
     @Override
-    public void edit(Ship ship) {
+    public void edit(Long id) {
 
     }
 
     @Override
     public Ship getById(long id) {
-         return allShips().get(((Long) id).intValue());
+         return ships.get(id);
     }
 }

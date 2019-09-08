@@ -18,6 +18,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class ShipController {
@@ -26,9 +27,8 @@ public class ShipController {
 
     @RequestMapping(value = "rest/ships", method = RequestMethod.POST)
     public ResponseEntity createShip(@RequestBody LinkedHashMap<String, Object> params) {
-        ShipServiceImpl shipService = new ShipServiceImpl();
         if (shipService.isParamsValid(params)) {
-            Ship newShip = shipService.convertParamsToShip(params);
+            Ship newShip = shipService.convertParamsToShip(params, null);
             shipService.add(newShip);
             return new ResponseEntity(JsonConverterService.toJSON(newShip), HttpStatus.OK);
         }
@@ -37,6 +37,11 @@ public class ShipController {
 
     @RequestMapping(value = "/ships/{id}", method = RequestMethod.GET)
     public ResponseEntity getShip(@PathVariable("id") long id) {
+        try{
+            shipService.getById(id);
+        } catch (Exception e) {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
         return shipService.getById(id) == null ?
                 new ResponseEntity(HttpStatus.NOT_FOUND) :
                 new ResponseEntity(JsonConverterService.toJSON(shipService.getById(id)),HttpStatus.OK);
@@ -44,10 +49,31 @@ public class ShipController {
 
     @RequestMapping(value = "/ships/{id}", method = RequestMethod.DELETE)
     public ResponseEntity deleteShip(@PathVariable("id") long id) {
+        try{
+            shipService.getById(id);
+        } catch (Exception e) {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
         if (shipService.getById(id) == null) {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         } else {
-            shipService.delete(shipService.getById(id));
+            shipService.delete(id);
+            return new ResponseEntity(JsonConverterService.toJSON(shipService.getById(id)),HttpStatus.OK);
+        }
+    }
+
+    @RequestMapping(value = "/ships/{id}", method = RequestMethod.POST)
+    public ResponseEntity editShip(@PathVariable("id") long id, @RequestBody LinkedHashMap<String, Object> params) {
+        try{
+            shipService.getById(id);
+        } catch (Exception e) {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+        if (shipService.getById(id) == null) {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        } else {
+            Ship ship = shipService.getById(id);
+            shipService.convertParamsToShip(params, ship);
             return new ResponseEntity(JsonConverterService.toJSON(shipService.getById(id)),HttpStatus.OK);
         }
     }
@@ -58,15 +84,6 @@ public class ShipController {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("ships");
         modelAndView.addObject("shipList", ships);
-        return modelAndView;
-    }
-
-    @RequestMapping(value = "/ships/{id}", method = RequestMethod.POST)
-    public ModelAndView editShip(@PathVariable("id") int id) {
-        Ship film = shipService.getById(id);
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("ship");
-        modelAndView.addObject("film", film);
         return modelAndView;
     }
 }

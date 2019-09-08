@@ -23,13 +23,13 @@ public class ShipServiceImpl implements ShipService {
     }
 
     @Override
-    public void delete(Ship ship) {
-
+    public void delete(Long id) {
+        shipDAO.delete(id);
     }
 
     @Override
-    public void edit(Ship ship) {
-
+    public void edit(Long id) {
+        shipDAO.edit(id);
     }
 
     @Override
@@ -37,22 +37,33 @@ public class ShipServiceImpl implements ShipService {
          return shipDAO.getById(id);
     }
 
-    public Ship convertParamsToShip(LinkedHashMap<String, Object> params){
-        Ship ship = new Ship();
+    public Ship convertParamsToShip(LinkedHashMap<String, Object> params, Ship ship){
+        ship = (ship == null) ? new Ship() : ship;
         try {
-            Date date = new Date((Long) params.get("prodDate"));
-            Double speed = (double) Math.round(Double.parseDouble((String) params.get("speed")) * 100) / 100;
-            Integer crewSize = Integer.parseInt((String) params.get("crewSize"));
-            ship.setName((String)params.get("name"));
-            ship.setPlanet((String)params.get("planet"));
-            ship.setShipType(ShipType.valueOf((String)params.get("shipType")));
-            ship.setProdDate(date);
-            ship.setSpeed(speed);
-            ship.setCrewSize(crewSize);
+            if (params.containsKey("name") && params.get("name") != "" && params.get("name").toString().length() <= 50) {
+                ship.setName((String)params.get("name")); }
+            if (params.containsKey("planet") && params.get("planet") != "" && params.get("planet").toString().length() <= 50) {
+                ship.setPlanet((String)params.get("planet")); }
+            if (params.containsKey("shipType")) {
+                ship.setShipType(ShipType.valueOf((String)params.get("shipType"))); }
+            if (params.containsKey("prodDate")) {
+                Date date = new Date((Long) params.get("prodDate"));
+                if (date.getYear() + 1900 >= 2800 && date.getYear() + 1900 <= 3019) {
+                    ship.setProdDate(date); }
+            }
             if (params.containsKey("isUsed")){
-                ship.setIsUsed((boolean)params.get("isUsed"));
-            } else {
-                ship.setIsUsed(false);
+                ship.setIsUsed((boolean)params.get("isUsed")); }
+            if (params.containsKey("speed")) {
+                Double speed = (double) Math.round(Double.parseDouble((String) params.get("speed")) * 100) / 100;
+                if (speed >= 0.01 && speed <= 0.99) {
+                    ship.setSpeed(speed);
+                }
+            }
+            if (params.containsKey("crewSize")) {
+                Integer crewSize = Integer.parseInt((String) params.get("crewSize"));
+                if (crewSize >= 1 && crewSize <= 9999) {
+                    ship.setCrewSize(crewSize);
+                }
             }
             ship.setRating();
         } catch (Exception e) {
@@ -70,7 +81,7 @@ public class ShipServiceImpl implements ShipService {
                 || params.get("crewSize") == null) {
             return false;
         }
-        Ship ship = convertParamsToShip(params);
+        Ship ship = convertParamsToShip(params, null);
         if ((ship.getProdDate().getYear() + 1900 >= 2800 && ship.getProdDate().getYear() + 1900 <= 3019) &&
                 (ship.getCrewSize() >= 1 && ship.getCrewSize() <= 9999) &&
                 (ship.getSpeed() >= 0.01 && ship.getSpeed() <= 0.99)) {
