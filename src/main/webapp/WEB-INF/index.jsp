@@ -94,7 +94,6 @@
 
 
     <button style="margin-bottom: 15px" type="button" class="btn btn-info" onclick="clickCreate()">Create new ship</button>
-    <button style="margin-bottom: 15px" type="button" class="btn btn-info" onclick="clickCreate()">Create new ship</button>
     <form style="background-color: #E9ECEF; padding: 20px; border-radius: 10px; display: none" id="createButton">
         <div class="form-row">
             <div class="form-group col-md-6">

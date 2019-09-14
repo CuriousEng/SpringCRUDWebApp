@@ -1,6 +1,5 @@
 package com.space.config;
 
-import com.space.repository.ShipDAOImpl;
 import com.space.service.ShipServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -71,10 +70,5 @@ public class AppConfig {
     @Bean
     public ShipServiceImpl shipService() {
         return new ShipServiceImpl();
-    }
-
-    @Bean
-    public ShipDAOImpl shipDAO() {
-        return new ShipDAOImpl();
     }
 }

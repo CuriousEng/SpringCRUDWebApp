@@ -2,11 +2,13 @@ package com.space.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import org.hibernate.annotations.Target;
 
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
+@Table(name = "ship")
 @JsonPropertyOrder({ "id", "name", "planet", "shipType", "prodDate", "isUsed", "speed", "crewSize", "rating" })
 public class Ship {
 
@@ -25,10 +27,12 @@ public class Ship {
     private String planet;
 
     @Column(name = "shipType")
+    @Enumerated(EnumType.STRING)
     @JsonInclude
     private ShipType shipType;
 
     @Column(name = "prodDate")
+    @Temporal(TemporalType.DATE)
     @JsonInclude
     private Date prodDate;
 
