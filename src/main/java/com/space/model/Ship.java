@@ -2,7 +2,6 @@ package com.space.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import org.hibernate.annotations.Target;
 
 import javax.persistence.*;
 import java.util.Date;

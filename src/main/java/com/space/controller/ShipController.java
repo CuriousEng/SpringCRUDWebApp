@@ -109,7 +109,6 @@ public class ShipController {
                                                     @RequestParam(value = "isUsed")     Optional<Boolean> isUsed,
                                                     @RequestParam(value = "minRating")  Optional<Double> minRating,
                                                     @RequestParam(value = "maxRating")  Optional<Double> maxRating) {
-        String order = shipOrder.isPresent() ? shipOrder.get().getFieldName() : "id";
         return new ResponseEntity<>(shipService.getAllShips(name, planet, shipType, after,
                 before, minSpeed, maxSpeed, minCrewSize, maxCrewSize,
                 isUsed, minRating, maxRating, null).size(), HttpStatus.OK);
