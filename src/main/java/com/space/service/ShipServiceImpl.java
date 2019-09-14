@@ -137,45 +137,34 @@ public class ShipServiceImpl implements ShipService {
     }
 
     @Override
+    public Ship update(long id, Ship ship) {
+        Ship boat = getById(id);
+        if (ship.getName() != null)
+            boat.setName(ship.getName());
+        if (ship.getPlanet() != null)
+            boat.setPlanet(ship.getPlanet());
+        if (ship.getSpeed() != null && ship.getSpeed() != 0.0)
+            boat.setSpeed(ship.getSpeed());
+        if (ship.getProdDate() != null)
+            boat.setProdDate(ship.getProdDate());
+        if (ship.getCrewSize() != null && ship.getCrewSize() != 0)
+            boat.setCrewSize(ship.getCrewSize());
+        if (ship.getShipType() != null)
+            boat.setShipType(ship.getShipType());
+        boat.setRating();
+
+        return boat;
+    }
+
+    @Override
+    public void saveShip(Ship ship){
+        shipRepository.save(ship);
+    }
+
+    @Override
     public Ship getById(long id) {
         Optional<Ship> optional = shipRepository.findById(id);
         return optional.get();
-    }
-
-    public Ship convertParamsToShip(LinkedHashMap<String, Object> params, Ship ship){
-        ship = (ship == null) ? new Ship() : ship;
-        try {
-            if (params.containsKey("name") && params.get("name") != "" && params.get("name").toString().length() <= 50) {
-                ship.setName((String)params.get("name")); }
-            if (params.containsKey("planet") && params.get("planet") != "" && params.get("planet").toString().length() <= 50) {
-                ship.setPlanet((String)params.get("planet")); }
-            if (params.containsKey("shipType")) {
-                ship.setShipType(ShipType.valueOf((String)params.get("shipType"))); }
-            if (params.containsKey("prodDate")) {
-                Date date = new Date((Long) params.get("prodDate"));
-                if (date.getYear() + 1900 >= 2800 && date.getYear() + 1900 <= 3019) {
-                    ship.setProdDate(date); }
-            }
-            if (params.containsKey("isUsed")){
-                ship.setIsUsed((boolean)params.get("isUsed")); }
-            if (params.containsKey("speed")) {
-                Double speed = (double) Math.round(Double.parseDouble((String) params.get("speed")) * 100) / 100;
-                if (speed >= 0.01 && speed <= 0.99) {
-                    ship.setSpeed(speed);
-                }
-            }
-            if (params.containsKey("crewSize")) {
-                Integer crewSize = Integer.parseInt((String) params.get("crewSize"));
-                if (crewSize >= 1 && crewSize <= 9999) {
-                    ship.setCrewSize(crewSize);
-                }
-            }
-            ship.setRating();
-        } catch (Exception e) {
-            System.out.println("Can`t parse value from request object");
-            e.printStackTrace();
-        }
-        return ship;
     }
 
     @Override

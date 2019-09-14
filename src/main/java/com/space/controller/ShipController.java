@@ -3,9 +3,7 @@ package com.space.controller;
 import com.space.model.Ship;
 import com.space.model.ShipType;
 import com.space.repository.ShipRepository;
-import com.space.service.JsonConverterService;
 import com.space.service.ShipService;
-import com.space.service.ShipServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,7 +27,7 @@ public class ShipController {
 
     //CREATE
     @RequestMapping(value = "rest/ships", method = RequestMethod.POST)
-    public ResponseEntity createShip(@RequestBody Ship ship, @RequestParam(value = "isUsed") Optional<Boolean> isUsed) {
+    public ResponseEntity createShip(@RequestBody Ship ship) {
         if (!shipService.isParamsNull(ship) && shipService.isParamsValid(ship)) {
             ship.setIsUsed(ship.getIsUsed() == null ? false : ship.getIsUsed());
             ship.setRating();
@@ -48,7 +45,7 @@ public class ShipController {
                 new ResponseEntity(HttpStatus.NOT_FOUND) :
                 new ResponseEntity(shipService.getById(id),HttpStatus.OK);
     }
-    
+
     //DELETE
     @RequestMapping(value = "rest/ships/{id}", method = RequestMethod.DELETE)
     public ResponseEntity deleteShip(@PathVariable("id") long id) {
@@ -57,20 +54,18 @@ public class ShipController {
         shipService.delete(id);
         return new ResponseEntity(HttpStatus.OK);
     }
+
     //UPDATE
     @RequestMapping(value = "rest/ships/{id}", method = RequestMethod.POST)
-    public ResponseEntity editShip(@PathVariable("id") long id, @RequestBody LinkedHashMap<String, Object> params) {
-        try{
-            shipRepository.findById(id).get();
-        } catch (Exception e) {
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        }
-        if (shipService.getById(id) == null) {
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
+    public ResponseEntity editShip(@PathVariable long id, @RequestBody Ship ship) {
+        if (id == 0) return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        if (!shipService.isExist(id)) return new ResponseEntity(HttpStatus.NOT_FOUND);
+            Ship updatedShip = shipService.update(id, ship);
+        if (shipService.isParamsValid(updatedShip)) {
+            shipService.saveShip(updatedShip);
+            return new ResponseEntity(updatedShip, HttpStatus.OK);
         } else {
-            Ship ship = shipService.getById(id);
-            shipService.convertParamsToShip(params, ship);
-            return new ResponseEntity(JsonConverterService.toJSON(shipService.getById(id)),HttpStatus.OK);
+                return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -119,16 +114,4 @@ public class ShipController {
                 before, minSpeed, maxSpeed, minCrewSize, maxCrewSize,
                 isUsed, minRating, maxRating, null).size(), HttpStatus.OK);
     }
-//    //GET SHIPS LIST
-//    @RequestMapping(value = "rest/ships", method = RequestMethod.GET)
-//    public ResponseEntity allShips() {
-//        List<Ship> ships = shipService.allShips();
-//        return new ResponseEntity(JsonConverterService.toJSON(shipService.getById(12)),HttpStatus.OK);
-//    }
-//    //GET SHIPS COUNT
-//    @RequestMapping(value = "rest/ships/count", method = RequestMethod.GET)
-//    public ResponseEntity shipsCount() {
-//        List<Ship> ships = shipService.allShips();
-//        return new ResponseEntity(JsonConverterService.countToJSON(ships.size()),HttpStatus.OK);
-//    }
 }
