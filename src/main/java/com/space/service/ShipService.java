@@ -18,5 +18,8 @@ public interface ShipService {
     Ship getById(long id);
     boolean isParamsValid(Ship ship);
     boolean isParamsNull(Ship ship);
+    boolean isExist(long id);
     Ship convertParamsToShip(LinkedHashMap<String, Object> params, Ship ship);
+    List<Ship> findAll(Pageable pageable);
+
 }

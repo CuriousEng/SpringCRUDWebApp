@@ -5,6 +5,7 @@ import com.space.model.ShipType;
 import com.space.repository.ShipRepository;
 import com.space.service.JsonConverterService;
 import com.space.service.ShipService;
+import com.space.service.ShipServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -42,30 +43,19 @@ public class ShipController {
     //GET
     @RequestMapping(value = "rest/ships/{id}", method = RequestMethod.GET)
     public ResponseEntity getShip(@PathVariable("id") long id) {
-        try{
-            shipRepository.findById(id).get();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        }
-        return shipService.getById(id) == null ?
+        if (id == 0) return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        return !shipService.isExist(id) ?
                 new ResponseEntity(HttpStatus.NOT_FOUND) :
-                new ResponseEntity(JsonConverterService.toJSON(shipService.getById(id)),HttpStatus.OK);
+                new ResponseEntity(shipService.getById(id),HttpStatus.OK);
     }
+    
     //DELETE
     @RequestMapping(value = "rest/ships/{id}", method = RequestMethod.DELETE)
     public ResponseEntity deleteShip(@PathVariable("id") long id) {
-        try{
-            shipRepository.findById(id).get();
-        } catch (Exception e) {
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        }
-        if (shipService.getById(id) == null) {
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
-        } else {
-            shipService.delete(id);
-            return new ResponseEntity(JsonConverterService.toJSON(shipService.getById(id)),HttpStatus.OK);
-        }
+        if (id > shipService.findAll(null).size()) return new ResponseEntity(HttpStatus.NOT_FOUND);
+        if (id == 0) return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        shipService.delete(id);
+        return new ResponseEntity(HttpStatus.OK);
     }
     //UPDATE
     @RequestMapping(value = "rest/ships/{id}", method = RequestMethod.POST)

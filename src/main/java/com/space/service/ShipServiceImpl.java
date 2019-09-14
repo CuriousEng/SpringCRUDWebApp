@@ -73,6 +73,7 @@ public class ShipServiceImpl implements ShipService {
         return shipRepository.getAllWithFiltersPlanetPageSize(planet, pageable);
     }
 
+    @Override
     public List<Ship> findAll(Pageable pageable) {
         if (pageable == null) {
             return shipRepository.getAll();
@@ -80,6 +81,10 @@ public class ShipServiceImpl implements ShipService {
         return shipRepository.findAll(pageable).getContent();
     }
 
+    @Override
+    public boolean isExist(long id){
+        return shipRepository.existsById(id);
+    }
 
     @Override
     public List<Ship> getAllShips(Optional<String> name, Optional<String> planet, Optional<ShipType> shipType, Optional<Long> after, Optional<Long> before,
